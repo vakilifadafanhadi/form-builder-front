@@ -1,0 +1,44 @@
+<nav class="navbar navbar-expand-sm bg-light">
+    <div class="container-fluid">
+        <ul class="navbar-nav">
+            <li class="nav-item" *ngFor="let item of inputTypes">
+                <button class="nav-link" (click)="insertTool(item)">
+                    {{item.type}}
+                </button>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="container">
+    <div class="row">
+        <div [class]="item.bSClass" *ngFor="let item of inputs" (click)="showProperties(item)">
+            <ng-container [ngSwitch]="item.tag">
+                <ng-container *ngSwitchCase="'input'">
+                    <app-input [type]="item.type" [label]="item.label"></app-input>
+                </ng-container>
+                <ng-container *ngSwitchCase="'textarea'">
+                    <textarea name="" id="" cols="30" rows="10"></textarea>
+                </ng-container>
+                <ng-container *ngSwitchCase="'mixedInput'">
+                    mix
+                </ng-container>
+                <ng-container *ngSwitchDefault>
+                    output2
+                </ng-container>
+            </ng-container>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <footer *ngIf="selectedItem" class="row">
+        <header class="col-12">
+            <h5>
+                properties
+            </h5>
+            <hr>
+        </header>
+        <app-input bSClass="col-4" label="name" placeHolder="name"></app-input>
+        <app-input bSClass="col-4" label="label" placeHolder="label"></app-input>
+    </footer>
+</div>
