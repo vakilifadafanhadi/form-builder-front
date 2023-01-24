@@ -1,0 +1,6 @@
+<div [class]="bSClass">
+    <label [for]="name" class="form-label">{{label}}</label>
+    <select [name]="name" class="form-select" (change)="selected($event)">
+        <option *ngFor="let item of items" [ngValue]="item">{{item[bindValue]}}</option>
+    </select>
+</div>

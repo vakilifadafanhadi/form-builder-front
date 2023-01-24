@@ -34,11 +34,23 @@ export const inputTypes: tool[] = [
         tag: "input"
     },
     {
-        type: "row",
+        type: "1x row",
+        bSClass: "col-md-12",
         tag: "div"
     },
     {
-        type: "col",
+        type: "2x row",
+        bSClass: "col-md-12",
+        tag: "div"
+    },
+    {
+        type: "3x row",
+        bSClass: "col-md-12",
+        tag: "div"
+    },
+    {
+        type: "4x row",
+        bSClass: "col-md-12",
         tag: "div"
     },
     {

@@ -1,4 +1,8 @@
 <div [class]="bSClass">
     <label [for]="name" class="form-label">{{label}}</label>
-    <input [type]="type" class="form-control" [attr.id]="name" [placeholder]="placeHolder" [attr.name]="name">
+    <input [type]="type" class="form-control" [attr.id]="name" [placeholder]="placeHolder" [attr.name]="name"
+        (keydown)="keydown($event)" (keyup)="keyup($event)" [required]="required">
+    <label class="text-danger" *ngIf="control?.errors && control?.touched">
+        {{ control.errors![objectFn.keys(control.errors!)[0]] }}
+    </label>
 </div>

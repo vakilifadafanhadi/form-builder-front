@@ -5,6 +5,9 @@ export interface iTool {
     name?: string;
     label?: string;
     bSClass?: string;
+    description?: string;
+    required?: boolean;
+    placeHolder?: string;
 }
 export class tool implements iTool {
     id?: string | undefined;
@@ -13,4 +16,8 @@ export class tool implements iTool {
     name?: string | undefined;
     label?: string | undefined;
     bSClass?: string | undefined;
+    description?: string | undefined;
+    required?: boolean | undefined = false;
+    placeHolder?: string | undefined = "";
+    childs?: tool[];
 }
