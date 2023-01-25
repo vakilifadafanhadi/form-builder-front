@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { inputTypes } from 'src/app/shared/data/input-types-data';
-import { tool } from 'src/app/shared/models/tool';
+import { iTool } from 'src/app/shared/models/tool';
 import { toolVM } from 'src/app/shared/views/toolVM';
 @Component({
   selector: 'app-create-update',
@@ -10,16 +10,16 @@ import { toolVM } from 'src/app/shared/views/toolVM';
 })
 export class CreateUpdateComponent {
   inputTypes = inputTypes;
-  inputs: tool[] = [];
+  inputs: iTool[] = [];
   selectedIndex!: number;
-  selectedItem!: tool;
+  selectedItem!: iTool;
   pushedIndex: number = -1;
   propertiesFormGroup: FormGroup<toolVM> = new FormGroup<toolVM>({
     label: new FormControl(null),
     name: new FormControl(null),
     bSClass: new FormControl(null)
   })
-  insertTool(item: tool) {
+  insertTool(item: iTool) {
     this.inputs.push(item);
   }
   showProperties(i: number) {
@@ -33,7 +33,7 @@ export class CreateUpdateComponent {
     this.inputs.splice(this.selectedIndex, 1);
     this.selectedIndex = -1;
   }
-  dragTool(item: tool) {
+  dragTool(item: iTool) {
     this.pushedIndex = -1;
     if (this.inputs.length < 1) {
       let newTool = this.inputTypes.find(current => current.type == "1x row");
@@ -41,15 +41,20 @@ export class CreateUpdateComponent {
         this.inputs.push(newTool);
     }
     this.selectedItem = item;
-  }
-  dragover(index: number) {
-    this.inputs[index].childs?.push(this.selectedItem);
+    console.log("inputs", this.inputs);
 
-    // if (this.pushedIndex != index) {
-    //   if (this.pushedIndex > -1)
-    //     this.inputs.splice(this.pushedIndex, 1);
-    //   this.inputs.splice(index, 0, this.selectedItem);
-    //   this.pushedIndex = index;
-    // }
+  }
+  dragover(index: number, childIndex?: number) {
+
+    // if (this.pushedIndex > -1)
+    if (this.pushedIndex != index)
+      if (childIndex == null || childIndex == undefined)
+        this.inputs[index].childs?.push(this.selectedItem);
+      else {
+        this.inputs[index].childs?.splice(this.pushedIndex, 1);
+        this.inputs[index].childs?.splice(index, 0, this.selectedItem);
+      }
+    this.pushedIndex = index;
+    console.log("inputs", this.inputs);
   }
 }

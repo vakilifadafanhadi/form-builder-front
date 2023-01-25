@@ -12,7 +12,8 @@
 <div class="container">
     <div (dragover)="dragover(i)" class="row mt-4 p-5 bg-info rounded" *ngFor="let item of inputs;let i = index"
         [ngSwitch]="item.type">
-        <div *ngFor="let child of item?.childs" [class]="item.bSClass">
+        <div class="row mt-4 p-5 bg-danger rounded" *ngFor="let child of item?.childs;let j = index"
+            (dragover)="dragover(i,j)" [class]="item.bSClass">
             <ng-container [ngSwitch]=" child.tag">
                 <ng-container *ngSwitchCase="'input'">
                     <app-input [placeHolder]="item?.placeHolder" [type]="item.type" [label]="item?.label"

@@ -8,6 +8,7 @@ export interface iTool {
     description?: string;
     required?: boolean;
     placeHolder?: string;
+    childs?: iTool[];
 }
 export class tool implements iTool {
     id?: string | undefined;
@@ -19,5 +20,4 @@ export class tool implements iTool {
     description?: string | undefined;
     required?: boolean | undefined = false;
     placeHolder?: string | undefined = "";
-    childs?: tool[];
 }

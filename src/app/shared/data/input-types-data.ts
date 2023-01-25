@@ -1,6 +1,6 @@
-import { tool } from "../models/tool";
+import { iTool } from "../models/tool";
 
-export const inputTypes: tool[] = [
+export const inputTypes: iTool[] = [
     {
         type: "number",
         tag: "input"
@@ -36,21 +36,22 @@ export const inputTypes: tool[] = [
     {
         type: "1x row",
         bSClass: "col-md-12",
-        tag: "div"
+        tag: "div",
+        childs: []
     },
     {
         type: "2x row",
-        bSClass: "col-md-12",
+        bSClass: "col-md-6",
         tag: "div"
     },
     {
         type: "3x row",
-        bSClass: "col-md-12",
+        bSClass: "col-md-4",
         tag: "div"
     },
     {
         type: "4x row",
-        bSClass: "col-md-12",
+        bSClass: "col-md-3",
         tag: "div"
     },
     {
