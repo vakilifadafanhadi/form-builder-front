@@ -42,7 +42,8 @@ export const inputTypes: iTool[] = [
     {
         type: "2x row",
         bSClass: "col-md-6",
-        tag: "div"
+        tag: "div",
+        childs: []
     },
     {
         type: "3x row",

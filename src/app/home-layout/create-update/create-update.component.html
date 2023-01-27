@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <ul class="navbar-nav">
             <li class="nav-item" *ngFor="let item of inputTypes">
-                <a href="javaScript:void(0)" class="nav-link" (click)="insertTool(item)" (dragstart)="dragTool(item)">
+                <a role="menuitem" class="nav-link dragover" (dragstart)="dragstart(item)" draggable="true">
                     {{item.type}}
                 </a>
             </li>
@@ -10,26 +10,52 @@
     </div>
 </nav>
 <div class="container">
-    <div (dragover)="dragover(i)" class="row mt-4 p-5 bg-info rounded" *ngFor="let item of inputs;let i = index"
-        [ngSwitch]="item.type">
-        <div class="row mt-4 p-5 bg-danger rounded" *ngFor="let child of item?.childs;let j = index"
-            (dragover)="dragover(i,j)" [class]="item.bSClass">
-            <ng-container [ngSwitch]=" child.tag">
-                <ng-container *ngSwitchCase="'input'">
-                    <app-input [placeHolder]="item?.placeHolder" [type]="item.type" [label]="item?.label"
-                        [required]="item.required"></app-input>
-                </ng-container>
-                <ng-container *ngSwitchCase="'textarea'">
-                    <textarea name="" id="" cols="30" rows="10"></textarea>
-                </ng-container>
-                <ng-container *ngSwitchCase="'mixedInput'">
-                    mix
-                </ng-container>
-                <ng-container *ngSwitchDefault>
-                </ng-container>
-            </ng-container>
-        </div>
+    <div *ngFor="let item of inputs;let i = index" [ngSwitch]="item.type">
+
     </div>
+</div>
+<div class="container">
+    <div class="row mt-4 p-5 bg-red rounded" (dragover)="dragover($event)" *ngIf="inputs.length<1" dropzone="copy|move"
+        (drop)="drop(0,inputs)">
+        whiteSpace
+    </div>
+    <ng-container *ngFor="let node of inputs;let i = index" [ngTemplateOutlet]="treeNode"
+        [ngTemplateOutletContext]="{ $implicit: node }">
+        <div class="row mt-4 p-5 bg-red rounded" (dragover)="dragover($event)" dropzone="copy|move"
+            (drop)="drop(i,inputs)">
+            whiteSpace {{i}}
+        </div>
+    </ng-container>
+    <ng-template #treeNode let-item>
+        <ng-container [ngSwitch]="item.tag">
+            <ng-container *ngSwitchCase="'input'">
+                <app-input [placeHolder]="item?.placeHolder" [type]="item.type" [label]="item?.label"
+                    [required]="item.required"></app-input>
+            </ng-container>
+            <ng-container *ngSwitchCase="'textarea'">
+                <textarea name="" id="" cols="30" rows="10"></textarea>
+            </ng-container>
+            <ng-container *ngSwitchCase="'mixedInput'">
+                mix
+            </ng-container>
+            <ng-container *ngSwitchCase="'div'">
+                <div class="row">
+                    <div [class]="item?.bSClass" *ngIf="item?.childs?.length<1" (dragover)="dragover($event)"
+                        (drop)="drop(0,item?.childs)">
+                        whiteSpace
+                    </div>
+                    <ng-container [class]="item?.bSClass" *ngFor="let child of item.childs;let i=index"
+                        [ngTemplateOutlet]="treeNode" [ngTemplateOutletContext]="{ $implicit: child }">
+                        <div (dragover)="dragover($event)" (drop)="drop(i,item?.childs)">
+                            whiteSpace {{i}}
+                        </div>
+                    </ng-container>
+                </div>
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+            </ng-container>
+        </ng-container>
+    </ng-template>
 </div>
 <div class="container-fluid">
     <footer *ngIf="selectedIndex>=0" class="row">

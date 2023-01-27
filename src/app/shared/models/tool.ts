@@ -10,14 +10,14 @@ export interface iTool {
     placeHolder?: string;
     childs?: iTool[];
 }
-export class tool implements iTool {
-    id?: string | undefined;
-    type?: string;
-    tag?: string | undefined;
-    name?: string | undefined;
-    label?: string | undefined;
-    bSClass?: string | undefined;
-    description?: string | undefined;
-    required?: boolean | undefined = false;
-    placeHolder?: string | undefined = "";
-}
+// export class tool implements iTool {
+//     id?: string | undefined;
+//     type?: string;
+//     tag?: string | undefined;
+//     name?: string | undefined;
+//     label?: string | undefined;
+//     bSClass?: string | undefined;
+//     description?: string | undefined;
+//     required?: boolean | undefined = false;
+//     placeHolder?: string | undefined = "";
+// }
