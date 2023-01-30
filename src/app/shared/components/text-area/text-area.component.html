@@ -1,7 +1,7 @@
 <div [class]="bSClass" [formGroup]="formGroup">
     <label [for]="name" class="form-label">{{label}}</label>
-    <input [formControl]="control" [type]="type" class="form-control" [attr.id]="name" [placeholder]="placeHolder"
-        [attr.name]="name" (keydown)="keydown($event)" (keyup)="keyup($event)" [required]="required">
+    <textarea [formControl]="control" cols="30" rows="10" class="form-control" [attr.id]="name"
+        [placeholder]="placeHolder" [attr.name]="name" [required]="required"></textarea>
     <label class="text-danger" *ngIf="control?.errors && control?.touched">
         {{ control.errors![objectFn.keys(control.errors!)[0]] }}
     </label>

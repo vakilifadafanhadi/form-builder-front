@@ -1,91 +1,422 @@
-<nav class="navbar navbar-expand-sm bg-light">
-    <div class="container-fluid">
-        <ul class="navbar-nav">
-            <li class="nav-item" *ngFor="let item of inputTypes">
-                <a role="menuitem" class="nav-link dragover" (dragstart)="dragstart(item)" draggable="true">
-                    {{item.type}}
-                </a>
-            </li>
-        </ul>
-    </div>
-</nav>
-<div class="container">
-    <div *ngFor="let item of inputs;let i = index" [ngSwitch]="item.type">
-
-    </div>
-</div>
-<div class="container">
-    <div class="row mt-4 p-5 bg-red rounded" (dragover)="dragover($event)" *ngIf="inputs.length<1" dropzone="copy|move"
-        (drop)="drop(0,inputs)">
-        whiteSpace
-    </div>
-    <ng-container *ngFor="let node of inputs;let i = index" [ngTemplateOutlet]="treeNode"
-        [ngTemplateOutletContext]="{ $implicit: node }">
-        <div class="row mt-4 p-5 bg-red rounded" (dragover)="dragover($event)" dropzone="copy|move"
-            (drop)="drop(i,inputs)">
-            whiteSpace {{i}}
-        </div>
-    </ng-container>
-    <ng-template #treeNode let-item>
-        <ng-container [ngSwitch]="item.tag">
-            <ng-container *ngSwitchCase="'input'">
-                <app-input [placeHolder]="item?.placeHolder" [type]="item.type" [label]="item?.label"
-                    [required]="item.required"></app-input>
-            </ng-container>
-            <ng-container *ngSwitchCase="'textarea'">
-                <textarea name="" id="" cols="30" rows="10"></textarea>
-            </ng-container>
-            <ng-container *ngSwitchCase="'mixedInput'">
-                mix
-            </ng-container>
-            <ng-container *ngSwitchCase="'div'">
-                <div class="row">
-                    <div [class]="item?.bSClass" *ngIf="item?.childs?.length<1" (dragover)="dragover($event)"
-                        (drop)="drop(0,item?.childs)">
-                        whiteSpace
-                    </div>
-                    <ng-container [class]="item?.bSClass" *ngFor="let child of item.childs;let i=index"
-                        [ngTemplateOutlet]="treeNode" [ngTemplateOutletContext]="{ $implicit: child }">
-                        <div (dragover)="dragover($event)" (drop)="drop(i,item?.childs)">
-                            whiteSpace {{i}}
+<div class="container-fluid mt-2">
+    <div class="row">
+        <nav class="col-3">
+            <div class="card bg-light text-dark">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-12 mt-2" *ngFor="let item of inputTypes">
+                            <app-mat-card [value]="item.type" (dragstart)="dragstart(item)"
+                                [icon]="item.icon!"></app-mat-card>
                         </div>
-                    </ng-container>
-                </div>
-            </ng-container>
-            <ng-container *ngSwitchDefault>
-            </ng-container>
-        </ng-container>
-    </ng-template>
-</div>
-<div class="container-fluid">
-    <footer *ngIf="selectedIndex>=0" class="row">
-        <header class="col-12">
-            <h5>
-                properties
-            </h5>
-            <hr>
-        </header>
-        <div class="col-12">
-            <div class="row">
-                <app-select class="col-3" label="type" [items]="inputTypes" bindValue="type"></app-select>
-                <app-input class="col-3" (keyUpEvent)="updateTool($event,'name')" label="name"
-                    placeHolder="name"></app-input>
-                <app-input class="col-3" (keyUpEvent)="updateTool($event,'label')" label="label"
-                    placeHolder="label"></app-input>
-                <app-input class="col-3" (keyUpEvent)="updateTool($event,'placeHolder')" label="placeHolder"
-                    placeHolder="placeHolder"></app-input>
-                <app-input class="col-12" (keyUpEvent)="updateTool($event,'description')" label="descriptions"
-                    placeHolder="descriptions"></app-input>
-                <div class="col-12">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="required" name="required">
-                        <label for="required" class="form-check-label">required</label>
                     </div>
-                    <button class="btn btn-danger mt-2" (click)="deleteTool()">
-                        delete ×
-                    </button>
+                </div>
+            </div>
+        </nav>
+        <div class="col-6" (mouseleave)="dragStart=0">
+            <div class="container">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <ng-container *ngFor="let item of inputs;let i = index">
+                                <div class="white-space" [ngClass]="item.bSClass" *ngIf="dragStart!=0"
+                                    (dragover)="dragover($event)" dropzone="copy|move" (drop)="drop(i)">
+                                    drop items here
+                                </div>
+                                <ng-container *ngTemplateOutlet="Recursion; context:{ item: item,i:i}"></ng-container>
+                            </ng-container>
+                            <div class="white-space" (dragover)="dragover($event)" dropzone="copy|move"
+                                *ngIf="dragStart!=0" (drop)="drop(inputs.length)">
+                                drop items here
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal"
+                    data-bs-target="#previewModal">
+                    <span>preview</span>
+                </button>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="card bg-light text-dark">
+                <div class="card-body">
+                    <footer *ngIf="selectedIndex.length>0" class="row">
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a role="button" class="nav-link" [ngClass]="propertyTab?'':'active'"
+                                    (click)="propertyTab=false">properties</a>
+                            </li>
+                            <li class="nav-item">
+                                <a role="button" class="nav-link" [ngClass]="propertyTab?'active':''"
+                                    (click)="propertyTab=true">validation</a>
+                            </li>
+                        </ul>
+                        <div [ngSwitch]="propertyTab">
+                            <div *ngSwitchCase="false">
+                                <div class="col-12">
+                                    <div class="row">
+                                        <app-select (onChangeOutput)="updateTool($event.type,'type')"
+                                            [formGroup]="propertiesFormGroup"
+                                            [control]="propertiesFormGroup.controls.type!" class="col-12" label="type"
+                                            [items]="inputTypes" [bindLabel]="'type'"></app-select>
+                                        <app-select [formGroup]="propertiesFormGroup"
+                                            (onChangeOutput)="updateTool($event.tag,'bSClass')"
+                                            [control]="propertiesFormGroup.controls.bSClass!" class="col-12"
+                                            label="size" [items]="sizes" [bindLabel]="'type'"
+                                            [bindValue]="'tag'"></app-select>
+                                        <app-select [formGroup]="propertiesFormGroup" [multiple]="true"
+                                            (onChangeOutput)="updatePremissions($event)"
+                                            [control]="propertiesFormGroup.controls.premissions!" class="col-12"
+                                            label="premissions" [items]="userTypes" [bindLabel]="'type'"></app-select>
+                                        <app-input [formGroup]="propertiesFormGroup"
+                                            [control]="propertiesFormGroup.controls.name!" class="col-12"
+                                            (keyUpEvent)="updateTool($event,'name')" label="name"
+                                            placeHolder="name"></app-input>
+                                        <app-input [formGroup]="propertiesFormGroup"
+                                            [control]="propertiesFormGroup.controls.label!" class="col-12"
+                                            (keyUpEvent)="updateTool($event,'label')" label="label"
+                                            placeHolder="label"></app-input>
+                                        <app-input *ngIf="selectedItem?.type=='daterange'"
+                                            [formGroup]="propertiesFormGroup"
+                                            [control]="propertiesFormGroup.controls.label!" class="col-12"
+                                            (keyUpEvent)="updateTool($event,'label2')" label="label2"
+                                            placeHolder="label2"></app-input>
+                                        <app-input [formGroup]="propertiesFormGroup"
+                                            *ngIf="selectedItem?.type=='number'||selectedItem?.type=='text'||selectedItem?.type=='textarea'"
+                                            [control]="propertiesFormGroup.controls.placeHolder!" class="col-12"
+                                            (keyUpEvent)="updateTool($event,'placeHolder')" label="placeHolder"
+                                            placeHolder="placeHolder"></app-input>
+                                        <app-input [formGroup]="propertiesFormGroup"
+                                            [control]="propertiesFormGroup.controls.description!" class="col-12"
+                                            (keyUpEvent)="updateTool($event,'description')" label="descriptions"
+                                            placeHolder="descriptions"></app-input>
+                                        <div class="col-12"
+                                            *ngIf="selectedItem?.type=='link'||selectedItem?.type=='button'">
+                                            <app-input [formGroup]="propertiesFormGroup"
+                                                [control]="propertiesFormGroup.controls.action!" class="col-12"
+                                                (keyUpEvent)="updateTool($event,'action')"
+                                                [label]="selectedItem?.type=='link'?'link':'action'"
+                                                placeHolder="name"></app-input>
+                                        </div>
+                                        <div class="col-12" *ngIf="selectedItem?.type=='button'">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <label>styles</label>
+                                                </div>
+                                            </div>
+                                            <button class="btn" [ngClass]="item.icon" *ngFor="let item of buttonStyles"
+                                                (click)="updateTool(item.icon!,'icon')">
+                                                <span>
+                                                    {{item.type}}
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div *ngSwitchDefault>
+                                <div class="col-12">
+                                    <div class="row">
+                                        <div *ngIf="selectedItem?.type=='number'||selectedItem?.type=='text'"
+                                            class="col-12">
+                                            <app-input [formGroup]="propertiesFormGroup"
+                                                [control]="propertiesFormGroup.controls.splitChar!" class="col-12"
+                                                (keyUpEvent)="updateTool($event,'splitChar')" label="split char"
+                                                placeHolder="split char"></app-input>
+                                        </div>
+                                        <div *ngIf="selectedItem?.type=='number'||selectedItem?.type=='text'"
+                                            class="col-12">
+                                            <app-input [formGroup]="propertiesFormGroup" type="number"
+                                                [control]="propertiesFormGroup.controls.splitCount!" class="col-12"
+                                                (keyUpEvent)="updateTool($event,'splitCount')" label="split count"
+                                                placeHolder="split count"></app-input>
+                                        </div>
+                                        <div class="col-6">
+                                            <app-input *ngIf="selectedItem?.type=='number'"
+                                                [formGroup]="propertiesFormGroup"
+                                                [control]="propertiesFormGroup.controls.max!" class="col-12"
+                                                (keyUpEvent)="updateTool($event,'max')" label="max number"
+                                                placeHolder="max number"></app-input>
+                                        </div>
+                                        <div class="col-6">
+                                            <app-input *ngIf="selectedItem?.type=='number'"
+                                                [formGroup]="propertiesFormGroup"
+                                                [control]="propertiesFormGroup.controls.min!" class="col-12"
+                                                (keyUpEvent)="updateTool($event,'min')" label="min number"
+                                                placeHolder="min number"></app-input>
+                                        </div>
+                                        <div class="col-6">
+                                            <app-input
+                                                *ngIf="selectedItem?.type=='textarea'||selectedItem?.type=='text'"
+                                                [formGroup]="propertiesFormGroup"
+                                                [control]="propertiesFormGroup.controls.max!" class="col-12"
+                                                (keyUpEvent)="updateTool($event,'max')" label="max length"
+                                                placeHolder="max number"></app-input>
+                                        </div>
+                                        <div class="col-6">
+                                            <app-input
+                                                *ngIf="selectedItem?.type=='textarea'||selectedItem?.type=='text'"
+                                                [formGroup]="propertiesFormGroup"
+                                                [control]="propertiesFormGroup.controls.min!" class="col-12"
+                                                (keyUpEvent)="updateTool($event,'min')" label="min length"
+                                                placeHolder="min number"></app-input>
+                                        </div>
+                                        <div class="col-6">
+                                            <app-input
+                                                *ngIf="selectedItem?.type=='date'||selectedItem?.type=='daterange'"
+                                                [formGroup]="propertiesFormGroup"
+                                                [control]="propertiesFormGroup.controls.max!" class="col-12" type="date"
+                                                (keyUpEvent)="updateTool($event,'max')" label="max date"
+                                                placeHolder="max date"></app-input>
+                                        </div>
+                                        <div class="col-6">
+                                            <app-input
+                                                *ngIf="selectedItem?.type=='date'||selectedItem?.type=='daterange'"
+                                                [formGroup]="propertiesFormGroup"
+                                                [control]="propertiesFormGroup.controls.min!" class="col-12" type="date"
+                                                (keyUpEvent)="updateTool($event,'min')" label="min date"
+                                                placeHolder="min date"></app-input>
+                                        </div>
+                                        <div class="col-6">
+                                            <app-input *ngIf="selectedItem?.type=='daterange'"
+                                                [formGroup]="propertiesFormGroup"
+                                                [control]="propertiesFormGroup.controls.maxTo!" class="col-12"
+                                                type="date" (keyUpEvent)="updateTool($event,'maxTo')"
+                                                label="max date to" placeHolder="max date to"></app-input>
+                                        </div>
+                                        <div class="col-6">
+                                            <app-input *ngIf="selectedItem?.type=='daterange'"
+                                                [formGroup]="propertiesFormGroup"
+                                                [control]="propertiesFormGroup.controls.minTo!" class="col-12"
+                                                type="date" (keyUpEvent)="updateTool($event,'minTo')"
+                                                label="min date to" placeHolder="min date to"></app-input>
+                                        </div>
+                                        <div class="col-6 mt-2">
+                                            <app-radio-button type="checkbox" name="required" *ngIf="selectedItem?.type=='daterange' || selectedItem?.type=='date'
+                                                ||selectedItem?.type=='textarea' || selectedItem?.type=='text'||
+                                                selectedItem?.type=='number'||selectedItem?.type=='dropdown'"
+                                                [checked]="propertiesFormGroup.controls.required?.value!"
+                                                (checkedChange)="required($event)" [formGroup]="propertiesFormGroup"
+                                                [control]="propertiesFormGroup.controls.required!"
+                                                label="required"></app-radio-button>
+                                        </div>
+                                        <div class="col-6 mt-2">
+                                            <app-radio-button type="checkbox" name="required"
+                                                *ngIf="selectedItem?.type=='daterange'"
+                                                [checked]="propertiesFormGroup.controls.requiredTo?.value!"
+                                                (checkedChange)="required($event)" [formGroup]="propertiesFormGroup"
+                                                [control]="propertiesFormGroup.controls.requiredTo!"
+                                                label="required to"></app-radio-button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
                 </div>
             </div>
         </div>
-    </footer>
+    </div>
+</div>
+<ng-template #Recursion let-item="item" let-i="i">
+    <div [class]="item.bSClass">
+        <ng-container [ngSwitch]="item.tag">
+            <ng-container *ngSwitchCase="'input'">
+                <app-input [formGroup]="formBuilder" [control]="control" [placeHolder]="item?.placeHolder"
+                    [type]="item.type" [label]="item?.label" [required]="item?.required!"></app-input>
+            </ng-container>
+            <ng-container *ngSwitchCase="'textarea'">
+                <app-text-area [formGroup]="formBuilder" [control]="control" [placeHolder]="item?.placeHolder"
+                    [type]="item.type" [label]="item?.label" [required]="item?.required!"></app-text-area>
+            </ng-container>
+            <ng-container *ngSwitchCase="'daterange'">
+                <div class="row">
+                    <div class="col-6">
+                        <app-input [formGroup]="formBuilder" [control]="control" [placeHolder]="item?.placeHolder"
+                            type="date" [label]="item?.label" [required]="item?.required!"></app-input>
+                    </div>
+                    <div class="col-6">
+                        <app-input [formGroup]="formBuilder" [control]="control" [placeHolder]="item?.placeHolder"
+                            type="date" [label]="item?.label2" [required]="item?.required!"></app-input>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-container *ngSwitchCase="'dropdown'">
+                <app-select [formGroup]="formBuilder" [control]="control" [placeHolder]="item?.placeHolder"
+                    [label]="item?.label" [required]="item?.required"></app-select>
+            </ng-container>
+            <ng-container *ngSwitchCase="'radio'">
+                <app-radio-button [formGroup]="formBuilder" [control]="control" [type]="'radio'" [label]="item?.label"
+                    [required]="item?.required!"></app-radio-button>
+            </ng-container>
+            <ng-container *ngSwitchCase="'checkbox'">
+                <app-radio-button [formGroup]="formBuilder" [control]="control" [type]="'checkbox'"
+                    [label]="item?.label" [required]="item?.required!"></app-radio-button>
+            </ng-container>
+            <ng-container *ngSwitchCase="'label'">
+                <label>{{item.label??"please enter text"}}</label>
+            </ng-container>
+            <ng-container *ngSwitchCase="'div'">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <ng-container *ngFor="let child of item.childs;let j=index">
+                                <ng-container *ngTemplateOutlet="Recursion; context:{ item: child,i:j }">
+                                </ng-container>
+                            </ng-container>
+                            <div class="white-space" (dragover)="dragover($event)"
+                                (drop)="dropchild(i,item?.childs?.length!)" dropzone="copy|move"
+                                *ngIf="dragStart!=0&&selectedItem?.tag!='div'">
+                                drop section items here
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-container *ngSwitchCase="'button'">
+                <button type="button" class="btn" [ngClass]="item?.icon">
+                    <span>{{item?.label??"please enter label"}}</span>
+                </button>
+            </ng-container>
+            <ng-container *ngSwitchCase="'link'">
+                <a role="button" class="btn btn-link">
+                    {{
+                    item?.label??
+                    'please enter label'
+                    }}
+                </a>
+            </ng-container>
+        </ng-container>
+        <div class="btn-group btn-group-sm">
+            <button type="button" class="movable btn btn-primary" (dragstart)="moveStart(i)" draggable="true">
+                <mat-icon fontIcon="open_with"></mat-icon>
+            </button>
+            <button type="button" class="btn" [ngClass]="selectedIndex[0]==i?'btn-warning':'btn-primary'"
+                (click)="editTool(i)">
+                <mat-icon fontIcon="edit"></mat-icon>
+            </button>
+            <button type="button" class="btn btn-danger" (click)="deleteTool(i)">
+                <mat-icon fontIcon="delete"></mat-icon>
+            </button>
+        </div>
+    </div>
+</ng-template>
+<div class="modal" id="previewModal">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Form preview</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <ng-container *ngFor="let item of inputs;let i = index">
+                            <ng-container *ngTemplateOutlet="preview; context:{ item: item,i:i}"></ng-container>
+                        </ng-container>
+                        <ng-template #preview let-item="item" let-i="i">
+                            <div [class]="item.bSClass">
+                                <ng-container [ngSwitch]="item.tag">
+                                    <ng-container *ngSwitchCase="'input'">
+                                        <app-input [formGroup]="formBuilder" [control]="control"
+                                            [placeHolder]="item?.placeHolder" [type]="item.type" [label]="item?.label"
+                                            [required]="item?.required!"></app-input>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'textarea'">
+                                        <app-text-area [formGroup]="formBuilder" [control]="control"
+                                            [placeHolder]="item?.placeHolder" [type]="item.type" [label]="item?.label"
+                                            [required]="item?.required!"></app-text-area>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'daterange'">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <app-input [formGroup]="formBuilder" [control]="control"
+                                                    [placeHolder]="item?.placeHolder" type="date" [label]="item?.label"
+                                                    [required]="item?.required!"></app-input>
+                                            </div>
+                                            <div class="col-6">
+                                                <app-input [formGroup]="formBuilder" [control]="control"
+                                                    [placeHolder]="item?.placeHolder" type="date" [label]="item?.label2"
+                                                    [required]="item?.required!"></app-input>
+                                            </div>
+                                        </div>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'dropdown'">
+                                        <app-select [formGroup]="formBuilder" [control]="control"
+                                            [placeHolder]="item?.placeHolder" [label]="item?.label"
+                                            [required]="item?.required"></app-select>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'radio'">
+                                        <app-radio-button [formGroup]="formBuilder" [control]="control" [type]="'radio'"
+                                            [label]="item?.label" [required]="item?.required!"></app-radio-button>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'checkbox'">
+                                        <app-radio-button [formGroup]="formBuilder" [control]="control"
+                                            [type]="'checkbox'" [label]="item?.label"
+                                            [required]="item?.required!"></app-radio-button>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'label'">
+                                        <label>{{item.label??"please enter text"}}</label>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'div'">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <ng-container *ngFor="let child of item.childs;let j=index">
+                                                        <ng-container
+                                                            *ngTemplateOutlet="Recursion; context:{ item: child,i:j }">
+                                                        </ng-container>
+                                                    </ng-container>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'button'">
+                                        <button type="button" class="btn" [ngClass]="item?.icon">
+                                            <span>{{item?.label??"please enter label"}}</span>
+                                        </button>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'link'">
+                                        <a role="button" class="btn btn-link">
+                                            {{
+                                            item?.label??
+                                            'please enter label'
+                                            }}
+                                        </a>
+                                    </ng-container>
+                                </ng-container>
+                            </div>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#saveModal">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="saveModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">enter form name</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <app-input #title label="title" placeHolder="title for form" type="text"
+                            [formGroup]="formBuilder" [control]="control"></app-input>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="save()">Save</button>
+            </div>
+        </div>
+    </div>
 </div>

@@ -2,61 +2,63 @@ import { iTool } from "../models/tool";
 
 export const inputTypes: iTool[] = [
     {
+        icon: "tag",
         type: "number",
         tag: "input"
     },
     {
+        icon: "title",
         type: "text",
         tag: "input"
     },
     {
+        icon: "calendar_month",
         type: "date",
         tag: "input"
     },
     {
+        icon: "html",
         type: "textarea",
         tag: "textarea"
     },
     {
+        icon: "date_range",
         type: "daterange",
-        tag: "mixedInput"
+        tag: "daterange"
     },
     {
+        icon: "list",
         type: "dropdown",
-        tag: "mixedInput"
+        tag: "dropdown"
     },
     {
+        icon: "radio_button_checked",
         type: "radio",
-        tag: "input"
+        tag: "radio"
     },
     {
+        icon: "check_box",
         type: "checkbox",
-        tag: "input"
+        tag: "checkbox"
     },
     {
-        type: "1x row",
-        bSClass: "col-md-12",
-        tag: "div",
-        childs: []
-    },
-    {
-        type: "2x row",
-        bSClass: "col-md-6",
-        tag: "div",
-        childs: []
-    },
-    {
-        type: "3x row",
-        bSClass: "col-md-4",
+        icon: "space_dashboard",
+        type: "section",
         tag: "div"
     },
     {
-        type: "4x row",
-        bSClass: "col-md-3",
-        tag: "div"
+        icon: "label",
+        type: "label",
+        tag: "label"
     },
     {
-        type: "group",
-        tag: "div"
+        icon: "smart_button",
+        type: "button",
+        tag: "button"
     },
+    {
+        icon: "link",
+        type: "link",
+        tag: "link"
+    }
 ];

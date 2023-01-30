@@ -14,6 +14,10 @@ const routes: Routes = [
         component: CreateUpdateComponent
       },
       {
+        path: 'create-update/:name',
+        component: CreateUpdateComponent
+      },
+      {
         path: '',
         component: ListComponent
       }

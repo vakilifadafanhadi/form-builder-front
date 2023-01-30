@@ -1,6 +1,10 @@
 <div [class]="bSClass">
     <label [for]="name" class="form-label">{{label}}</label>
-    <select [name]="name" class="form-select" (change)="selected($event)">
-        <option *ngFor="let item of items" [ngValue]="item">{{item[bindValue]}}</option>
-    </select>
+    <ng-select [multiple]="multiple" [closeOnSelect]="closeOnSelect" [searchable]="searchable" [bindLabel]="bindLabel"
+        [formControl]="control" [attr.name]="name" [attr.id]="name" [placeholder]="placeHolder!" [bindValue]="bindValue"
+        [items]="items" (change)="onChange($event)" [required]="required!">
+    </ng-select>
+    <label class="text-danger" *ngIf="control?.errors && control?.touched">
+        {{ control.errors![objectFn.keys(control.errors!)[0]] }}
+    </label>
 </div>

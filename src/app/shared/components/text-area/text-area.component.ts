@@ -2,11 +2,11 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
-  selector: 'app-input',
-  templateUrl: './input.component.html',
-  styleUrls: ['./input.component.less']
+  selector: 'app-text-area',
+  templateUrl: './text-area.component.html',
+  styleUrls: ['./text-area.component.less']
 })
-export class InputComponent {
+export class TextAreaComponent {
   @Input() bSClass?: string;
   @Input() name?: string;
   @Input() label?: string = "label";
@@ -18,15 +18,4 @@ export class InputComponent {
   @Input() formGroup!: FormGroup<any>;
   @Output() keyUpEvent: EventEmitter<any> = new EventEmitter<any>();
   objectFn = Object;
-  timer: number = 1;
-  timeoutVal: number = 1;
-  keydown(event: KeyboardEvent) {
-    window.clearTimeout(this.timer);
-  }
-  keyup(event: any) {
-    window.clearTimeout(this.timer);
-    this.timer = window.setTimeout(() => {
-      this.keyUpEvent.emit(event.target.value);
-    }, this.timeoutVal);
-  };
 }
