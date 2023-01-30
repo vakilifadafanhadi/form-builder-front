@@ -20,7 +20,7 @@ export class ListComponent implements OnInit {
   deleteItem(name: string, index: number) {
     if (this._backendService.delete(name)) {
       this._toastr.success("deleted");
-      this.list.splice(index, 1);
+      this.list = this._backendService.list();
     }
     else this._toastr.warning("not found");
   }

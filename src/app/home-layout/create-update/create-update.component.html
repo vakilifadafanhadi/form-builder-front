@@ -310,84 +310,81 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-12">
-                        <ng-container *ngFor="let item of inputs;let i = index">
-                            <ng-container *ngTemplateOutlet="preview; context:{ item: item,i:i}"></ng-container>
-                        </ng-container>
-                        <ng-template #preview let-item="item" let-i="i">
-                            <div [class]="item.bSClass">
-                                <ng-container [ngSwitch]="item.tag">
-                                    <ng-container *ngSwitchCase="'input'">
-                                        <app-input [formGroup]="formBuilder" [control]="control"
-                                            [placeHolder]="item?.placeHolder" [type]="item.type" [label]="item?.label"
-                                            [required]="item?.required!"></app-input>
-                                    </ng-container>
-                                    <ng-container *ngSwitchCase="'textarea'">
-                                        <app-text-area [formGroup]="formBuilder" [control]="control"
-                                            [placeHolder]="item?.placeHolder" [type]="item.type" [label]="item?.label"
-                                            [required]="item?.required!"></app-text-area>
-                                    </ng-container>
-                                    <ng-container *ngSwitchCase="'daterange'">
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <app-input [formGroup]="formBuilder" [control]="control"
-                                                    [placeHolder]="item?.placeHolder" type="date" [label]="item?.label"
-                                                    [required]="item?.required!"></app-input>
-                                            </div>
-                                            <div class="col-6">
-                                                <app-input [formGroup]="formBuilder" [control]="control"
-                                                    [placeHolder]="item?.placeHolder" type="date" [label]="item?.label2"
-                                                    [required]="item?.required!"></app-input>
-                                            </div>
-                                        </div>
-                                    </ng-container>
-                                    <ng-container *ngSwitchCase="'dropdown'">
-                                        <app-select [formGroup]="formBuilder" [control]="control"
-                                            [placeHolder]="item?.placeHolder" [label]="item?.label"
-                                            [required]="item?.required"></app-select>
-                                    </ng-container>
-                                    <ng-container *ngSwitchCase="'radio'">
-                                        <app-radio-button [formGroup]="formBuilder" [control]="control" [type]="'radio'"
-                                            [label]="item?.label" [required]="item?.required!"></app-radio-button>
-                                    </ng-container>
-                                    <ng-container *ngSwitchCase="'checkbox'">
-                                        <app-radio-button [formGroup]="formBuilder" [control]="control"
-                                            [type]="'checkbox'" [label]="item?.label"
-                                            [required]="item?.required!"></app-radio-button>
-                                    </ng-container>
-                                    <ng-container *ngSwitchCase="'label'">
-                                        <label>{{item.label??"please enter text"}}</label>
-                                    </ng-container>
-                                    <ng-container *ngSwitchCase="'div'">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <div class="row">
-                                                    <ng-container *ngFor="let child of item.childs;let j=index">
-                                                        <ng-container
-                                                            *ngTemplateOutlet="Recursion; context:{ item: child,i:j }">
-                                                        </ng-container>
-                                                    </ng-container>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </ng-container>
-                                    <ng-container *ngSwitchCase="'button'">
-                                        <button type="button" class="btn" [ngClass]="item?.icon">
-                                            <span>{{item?.label??"please enter label"}}</span>
-                                        </button>
-                                    </ng-container>
-                                    <ng-container *ngSwitchCase="'link'">
-                                        <a role="button" class="btn btn-link">
-                                            {{
-                                            item?.label??
-                                            'please enter label'
-                                            }}
-                                        </a>
-                                    </ng-container>
+                    <ng-container *ngFor="let item of inputs;let i = index">
+                        <ng-container *ngTemplateOutlet="preview; context:{ item: item,i:i}"></ng-container>
+                    </ng-container>
+                    <ng-template #preview let-item="item" let-i="i">
+                        <div [class]="item.bSClass">
+                            <ng-container [ngSwitch]="item.tag">
+                                <ng-container *ngSwitchCase="'input'">
+                                    <app-input [formGroup]="formBuilder" [control]="control"
+                                        [placeHolder]="item?.placeHolder" [type]="item.type" [label]="item?.label"
+                                        [required]="item?.required!"></app-input>
                                 </ng-container>
-                            </div>
-                        </ng-template>
-                    </div>
+                                <ng-container *ngSwitchCase="'textarea'">
+                                    <app-text-area [formGroup]="formBuilder" [control]="control"
+                                        [placeHolder]="item?.placeHolder" [type]="item.type" [label]="item?.label"
+                                        [required]="item?.required!"></app-text-area>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'daterange'">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <app-input [formGroup]="formBuilder" [control]="control"
+                                                [placeHolder]="item?.placeHolder" type="date" [label]="item?.label"
+                                                [required]="item?.required!"></app-input>
+                                        </div>
+                                        <div class="col-6">
+                                            <app-input [formGroup]="formBuilder" [control]="control"
+                                                [placeHolder]="item?.placeHolder" type="date" [label]="item?.label2"
+                                                [required]="item?.required!"></app-input>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'dropdown'">
+                                    <app-select [formGroup]="formBuilder" [control]="control"
+                                        [placeHolder]="item?.placeHolder" [label]="item?.label"
+                                        [required]="item?.required"></app-select>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'radio'">
+                                    <app-radio-button [formGroup]="formBuilder" [control]="control" [type]="'radio'"
+                                        [label]="item?.label" [required]="item?.required!"></app-radio-button>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'checkbox'">
+                                    <app-radio-button [formGroup]="formBuilder" [control]="control" [type]="'checkbox'"
+                                        [label]="item?.label" [required]="item?.required!"></app-radio-button>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'label'">
+                                    <label>{{item.label??"please enter text"}}</label>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'div'">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <ng-container *ngFor="let child of item.childs;let j=index">
+                                                    <ng-container
+                                                        *ngTemplateOutlet="Recursion; context:{ item: child,i:j }">
+                                                    </ng-container>
+                                                </ng-container>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'button'">
+                                    <button type="button" class="btn" [ngClass]="item?.icon">
+                                        <span>{{item?.label??"please enter label"}}</span>
+                                    </button>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'link'">
+                                    <a role="button" class="btn btn-link">
+                                        {{
+                                        item?.label??
+                                        'please enter label'
+                                        }}
+                                    </a>
+                                </ng-container>
+                            </ng-container>
+                        </div>
+                    </ng-template>
                 </div>
             </div>
             <div class="modal-footer">

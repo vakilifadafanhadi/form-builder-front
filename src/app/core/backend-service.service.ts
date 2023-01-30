@@ -20,7 +20,7 @@ export class BackendServiceService {
       list = [];
     let index = list.findIndex(current => current.name == name);
     if (index >= 0)
-      list[index] = { newName, date: new Date(), model };
+      list[index] = { name: newName, date: new Date(), data: model };
     localStorage.setItem("list", JSON.stringify(list));
   }
   get(name: string) {
